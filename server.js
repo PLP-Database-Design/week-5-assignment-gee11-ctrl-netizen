@@ -95,19 +95,76 @@ app.get('/patientFirstName', (req, res) => {
 
 
 
-//Create a ```GET``` endpoint that retrieves all providers by their specialty
 
-app.get('/providerSpecialty', (req, res) => {
-    const getProviderSpecialty = 'SELECT provider_id, provider_specialty FROM providers'
-    db.query(getProviderSpecialty, (err, data) => {
+// ## 3. Filter patients by First Name
+// Create a ```GET``` endpoint that retrieves all patients by their first name
+
+//1 using request query key values
+
+app.get('/patientBy_firstName', (req, res) => {
+    const firstName = req.query.firstName;
+    const getPatientsByfirstName = 'SELECT patient_id, first_name, language FROM patients WHERE first_name = ? ';
+    console.log({ firstName });
+
+    db.query(getPatientsByfirstName, [firstName], (err, data) => {
         if (err) {
-            return res.status(400).send('Unable to retrieve provider specialty.', err)
+            return res.status(500).send(err);
         }
 
-        res.status(200).send(data)
-
+        res.json({ data: data })
     })
 })
+
+//2.using specifying the parameters on path
+
+app.get('/patient/:fName', (req, res) => {
+    const { fName } = req.params;
+    const getPatientfName = 'SELECT patient_id, first_name, last_name, language FROM patients WHERE first_name = ?';
+
+    db.query(getPatientfName, [fName], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.json(results)
+    })
+})
+
+
+
+//## 4. Retrieve all providers by their specialty
+// Create a ```GET``` endpoint that retrieves all providers by their specialty
+//1 by defining parameters on the path
+
+app.get('/providersData/:bySpecialty', (req, res) => {
+    const { bySpecialty } = req.params;
+    const getProviderSpecialty = 'SELECT provider_id, first_name,provider_specialty FROM providers WHERE provider_specialty = ?';
+    console.log({ bySpecialty });
+    db.query(getProviderSpecialty, [bySpecialty], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        res.json(results);
+
+    });
+
+});
+
+// 2. Request query value statement
+
+app.get('/doctorSpecialty', (req, res) => {
+    const docSpecialty = req.query.docSpecialty;
+    const getDocSpecialty = 'SELECT provider_id, first_name, provider_specialty FROM providers WHERE provider_specialty = ?';
+    console.log({ docSpecialty });
+    db.query(getDocSpecialty, [docSpecialty], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        res.json({ results: results });
+    });
+
+});
 
 
 
