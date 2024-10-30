@@ -80,18 +80,6 @@ app.get('/providers', (req, res) => {
 // })
 
 
-// Create a ```GET``` endpoint that retrieves all patients by their first name
-
-app.get('/patientFirstName', (req, res) => {
-    const getpatientFirstName = 'SELECT patient_id, first_name FROM patients'
-    db.query(getpatientFirstName, (err, data) => {
-        if (err) {
-            return res.status(400).send('unable to filter patients by first name!', err)
-        }
-
-        res.status(200).send(data)
-    })
-})
 
 
 
